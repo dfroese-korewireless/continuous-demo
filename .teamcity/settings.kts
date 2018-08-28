@@ -11,7 +11,7 @@ project {
     buildType(Default)
 
     params {
-        param("system.BuildNumber", "1.0.%build.counter%")
+        param("env.BuildNumber", "1.0.%build.counter%")
     }
 }
 
