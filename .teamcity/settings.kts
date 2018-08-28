@@ -1,6 +1,7 @@
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
 import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.ExecBuildStep
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.dockerCommand
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.DockerBuildStep.Source
 
