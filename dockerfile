@@ -1,4 +1,4 @@
-FROM golang:1.10 as build
+FROM golang:1.10
 
 WORKDIR /go/src/github.com/dfroese-korewireless/continuous-demo
 COPY . .
