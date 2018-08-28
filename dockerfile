@@ -6,6 +6,6 @@ COPY . .
 ADD html/index.html /html/index.html
 
 RUN go get -d -v ./...
-RUN go build -ldflags "-X main.Version=1.0.10" -o /demo .
+RUN go build -ldflags "-X main.Version=1.0.11" -o /demo .
 
 ENTRYPOINT ["/demo"]
