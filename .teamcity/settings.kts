@@ -37,9 +37,9 @@ object Default : BuildType({
             }
         }
 
-        script {
+        exec {
             name = "Run images"
-            scriptContent = "./deploy"
+            path = "./deploy"
         }
     }
 })
