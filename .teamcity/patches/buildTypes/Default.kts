@@ -32,6 +32,7 @@ changeBuildType(RelativeId("Default")) {
             exec {
                 name = "Run images"
                 path = "./deploy"
+                formatStderrAsError = true
             }
         }
         items.removeAt(2)
