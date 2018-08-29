@@ -6,11 +6,9 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/dfroese-korewireless/continuous-demo/appinfo"
 	"github.com/dfroese-korewireless/continuous-demo/sysinfo"
 )
-
-// Version stores the injected version value
-var Version string
 
 // Info contains all the information to be put into the web page
 type Info struct {
@@ -20,13 +18,21 @@ type Info struct {
 func serveIndex(w http.ResponseWriter, r *http.Request) {
 	sinfo, err := sysinfo.GetSystemInfo()
 
-	info := Info{AppVersion: Version, IPAddr: sinfo.IPAddress}
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	ainfo, err := appinfo.GetAppInfo()
 
 	if err != nil {
 		log.Println(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
+	info := Info{AppVersion: ainfo.AppVersion, IPAddr: sinfo.IPAddress}
 
 	t := template.New("index.html")
 	t, err = t.ParseFiles("html/index.html")
