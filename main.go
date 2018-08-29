@@ -4,7 +4,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"os"
 
 	"github.com/dfroese-korewireless/continuous-demo/appinfo"
 	"github.com/dfroese-korewireless/continuous-demo/sysinfo"
@@ -42,7 +41,6 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	t.Execute(os.Stdout, info)
 	t.Execute(w, info)
 }
 
