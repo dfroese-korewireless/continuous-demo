@@ -28,7 +28,7 @@ object Default : BuildType({
     }
 
     steps {
-        scripts {
+        script {
             name = "Build config file"
             scriptContent = "sed -i -e 's/##version##/%env.BuildNumber%/g' appsettings.dev.json > appsettings.json"
         }
