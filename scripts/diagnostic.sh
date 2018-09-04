@@ -3,9 +3,8 @@
 echo "Docker Info"
 docker version
 
-echo "Configured Environment Variables"
-echo $vcsBranch
-echo $BuildNumber
+echo "Working Directory"
+pwd
 
 echo "Environment Variables"
 printenv

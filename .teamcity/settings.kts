@@ -9,13 +9,9 @@ version = "2018.1"
 
 project {
     buildType(Default)
-    root = DslContext.settingsRoot
-    branch = "%teamcity.build.branch%"
 
     params {
         param("env.BuildNumber", "1.0.%build.counter%")
-        param("env.vcsBranch", branch)
-        param("system.teamcity.debug.dump.parameters", "true")
     }
 }
 
@@ -42,19 +38,24 @@ object Default : BuildType({
             scriptContent = "sed -e 's/##version##/%env.BuildNumber%/g' appsettings.dev.json > appsettings.json"
         }
 
-        dockerCommand {
-            name = "Build docker image"
-            commandType = build {
-                source = path {
-                    path = "dockerfile"
-                }
-                namesAndTags = "continuous-demo"
-            }
-        }
+        // script {
+        //     name = "Start build container"
+        //     scriptContent = "docker run --rm -d -v /"
+        // }
 
-        exec {
-            name = "Run images"
-            path = "./scripts/deploy.sh"
-        }
+        // dockerCommand {
+        //     name = "Build docker image"
+        //     commandType = build {
+        //         source = path {
+        //             path = "dockerfile"
+        //         }
+        //         namesAndTags = "continuous-demo"
+        //     }
+        // }
+
+        // exec {
+        //     name = "Run images"
+        //     path = "./scripts/deploy.sh"
+        // }
     }
 })
