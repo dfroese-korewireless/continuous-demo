@@ -9,9 +9,13 @@ version = "2018.1"
 
 project {
     buildType(Default)
+    root = DslContext.settingsRoot
+    branch = "%teamcity.build.branch%"
 
     params {
         param("env.BuildNumber", "1.0.%build.counter%")
+        param("env.vcsBranch", branch)
+        param("system.teamcity.debug.dump.parameters", "true")
     }
 }
 
