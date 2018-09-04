@@ -28,6 +28,11 @@ object Default : BuildType({
     }
 
     steps {
+        exec {
+            name = "Diagnostic check"
+            path = "./scripts/diagnostic.sh"
+        }
+
         script {
             name = "Build config file"
             scriptContent = "sed -e 's/##version##/%env.BuildNumber%/g' appsettings.dev.json > appsettings.json"
@@ -45,7 +50,7 @@ object Default : BuildType({
 
         exec {
             name = "Run images"
-            path = "./deploy"
+            path = "./scripts/deploy.sh"
         }
     }
 })
