@@ -60,7 +60,7 @@ object Default : BuildType({
     name = "Default"
 
     vcs {
-        root(gitVcs)
+        root("ContinuousDemo")
     }
 
     triggers {
