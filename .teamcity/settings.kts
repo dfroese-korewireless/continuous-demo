@@ -38,9 +38,14 @@ object Default : BuildType({
             scriptContent = "sed -e 's/##version##/%env.BuildNumber%/g' appsettings.dev.json > appsettings.json"
         }
 
+        script {
+            name = "Write VCS Settings"
+            scriptContent = "echo $DslContext.settingsRoot"
+        }
+
         // script {
         //     name = "Start build container"
-        //     scriptContent = "docker run --rm -d -v /"
+        //     scriptContent = "docker run --rm -d --name dotnet-build-contanier -v /opt/buildagent/artifacts:/artifacts microsoft/dotnet:2.1-sdk /bin/bash"
         // }
 
         // dockerCommand {
@@ -56,6 +61,11 @@ object Default : BuildType({
         // exec {
         //     name = "Run images"
         //     path = "./scripts/deploy.sh"
+        // }
+
+        // script {
+        //     name = "Stop build container"
+        //     scriptContent = "docker stop dotnet-build-container"
         // }
     }
 })
