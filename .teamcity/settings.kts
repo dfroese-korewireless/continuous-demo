@@ -8,14 +8,15 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.DockerBuildStep.S
 
 version = "2018.1"
 
+val gitVcs = GitVcsRoot({
+    id("ContinuousDemo")
+    name = "Continuous-Demo"
+    url = "https://github.com/dfroese-korewireless/continuous-demo.git"
+})
+
 project {
     description = "A sample project for experimenting with TeamCity Kotlin DSL"
 
-    val gitVcs = GitVcsRoot({
-        id("ContinuousDemo")
-        name = "Continuous-Demo"
-        url = "https://github.com/dfroese-korewireless/continuous-demo.git"
-    })
     vcsRoot(gitVcs)
 
     // val buildTemplate = Template({
@@ -60,7 +61,7 @@ object Default : BuildType({
     name = "Default"
 
     vcs {
-        root("ContinuousDemo")
+        root(gitVcs)
     }
 
     triggers {
