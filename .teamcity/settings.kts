@@ -1,4 +1,5 @@
 import jetbrains.buildServer.configs.kotlin.v2018_1.*
+import jetbrains.buildServer.configs.kotlin.v2018_1.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.exec
@@ -8,6 +9,46 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.DockerBuildStep.S
 version = "2018.1"
 
 project {
+    description = "A sample project for experimenting with TeamCity Kotlin DSL"
+
+    val gitVcs = GitVcsRoot({
+        id("ContinuousDemo")
+        name = "Continuous-Demo"
+        url = "https://github.com/dfroese-korewireless/continuous-demo.git"
+    })
+    vcsRoot(gitVcs)
+
+    // val buildTemplate = Template({
+    //     id("Build")
+    //     name = "build"
+
+    //     vcs {
+    //         root(gitVcs)
+    //     }
+
+    //     steps {
+    //         exec {
+    //             name = "Diagnostic Check"
+    //             path = "./scripts/diagnostic.sh"
+    //         }
+    //     }
+
+    //     triggers {
+    //         vcs {
+    //             id = "Trigger_1"
+    //             quietPeriodMode = USE_DEFAULT
+    //             triggerRules = """
+    //                 +:root=${DslContext.projectId.absoluteId}_ContinuousDemo;:**
+    //             """.trimIndent()
+    //         }
+    //     }
+
+    //     failureConditions {
+    //         executionTimeoutMin = 10
+    //     }
+    // })
+
+
     buildType(Default)
 
     params {
@@ -18,9 +59,9 @@ project {
 object Default : BuildType({
     name = "Default"
 
-    vcs {
-        root(DslContext.settingsRoot)
-    }
+    // vcs {
+    //     root(DslContext.settingsRoot)
+    // }
 
     triggers {
         vcs {
@@ -40,7 +81,7 @@ object Default : BuildType({
 
         script {
             name = "Write VCS information"
-            scriptContent = "echo $DslContext.settingsRoot && echo $VcsRoot.name"
+            scriptContent = "echo ${DslContext.projectId.absoluteId}"
         }
 
         // script {
