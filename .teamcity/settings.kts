@@ -39,8 +39,8 @@ object Default : BuildType({
         }
 
         script {
-            name = "Write VCS Settings"
-            scriptContent = "echo $DslContext.settingsRoot"
+            name = "Write VCS information"
+            scriptContent = "echo $DslContext.settingsRoot && echo $vcs.name"
         }
 
         // script {
