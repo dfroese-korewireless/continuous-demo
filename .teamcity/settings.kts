@@ -59,9 +59,9 @@ project {
 object Default : BuildType({
     name = "Default"
 
-    // vcs {
-    //     root(DslContext.settingsRoot)
-    // }
+    vcs {
+        root(gitVcs)
+    }
 
     triggers {
         vcs {
