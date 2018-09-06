@@ -6,7 +6,8 @@ cd /go/src/github.com/dfroese-korewireless/continuous-demo
 
 echo "Building..."
 go get -d -v ./...
-go build -o /out/demo .
+CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' -o /out/demo .
+# go build -o /out/demo .
 
 echo "Extracting..."
 cp -r html/ /out/html
