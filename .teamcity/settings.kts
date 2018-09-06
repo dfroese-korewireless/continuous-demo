@@ -59,7 +59,7 @@ object Default : BuildType({
 
         script {
             name = "Setup scripts"
-            scriptContent = "docker exec go-build-container chmod +x /src/scripts/*.sh"
+            scriptContent = "docker exec go-build-container chmod +x /src/scripts/build.sh"
         }
 
         script {
