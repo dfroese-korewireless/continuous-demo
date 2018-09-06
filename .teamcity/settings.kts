@@ -49,27 +49,27 @@ object Default : BuildType({
 
         script {
             name = "Start build container"
-            scriptContent = "docker run --rm -d --name dotnet-build-container  microsoft/dotnet:2.1-sdk tail -f /dev/null"
+            scriptContent = "docker run --rm -d --name go-build-container  golang:1.10 tail -f /dev/null"
         }
 
         script {
             name = "Copy source code into container"
-            scriptContent = "docker cp . dotnet-build-container:/src"
+            scriptContent = "docker cp . go-build-container:/src"
         }
 
         script {
             name = "Run build script"
-            scriptContent = "docker exec dotnet-build-container /src/scripts/build.sh"
+            scriptContent = "docker exec go-build-container /src/scripts/build.sh"
         }
 
         script {
             name = "Copy artiface archive out of container"
-            scriptContent = "docker cp dotnet-build-container:/artifacts/app.tar.gz ."
+            scriptContent = "docker cp go-build-container:/artifacts/app.tar.gz ."
         }
 
         script {
             name = "Stop build container"
-            scriptContent = "docker stop dotnet-build-container"
+            scriptContent = "docker stop go-build-container"
         }
 
         dockerCommand {
