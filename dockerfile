@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-ADD app.tar.gz /home
+ADD app.tar.gz /
 
 # WORKDIR /go/src/github.com/dfroese-korewireless/continuous-demo
 # COPY . .
@@ -10,6 +10,4 @@ ADD app.tar.gz /home
 # RUN go get -d -v ./...
 # RUN go build -o /demo .
 
-RUN ls /home
-
-ENTRYPOINT ["/home/demo"]
+ENTRYPOINT ["/demo"]
