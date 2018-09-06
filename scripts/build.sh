@@ -11,5 +11,6 @@ CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' -o /out/de
 
 echo "Extracting..."
 cp -r html/ /out/html
+cp appsettings.json /out
 cd /out
 tar -zcvf /artifacts/app.tar.gz *
