@@ -53,6 +53,11 @@ object Default : BuildType({
         }
 
         script {
+            name = "Setup folders"
+            scriptContent = "docker exec go-build-container mkdir -p /go/src/github.com/dfroese-korewireless/continuous-demo"
+        }
+
+        script {
             name = "Copy source code into container"
             scriptContent = "docker cp . go-build-container:/go/src/github.com/dfroese-korewireless/continuous-demo"
         }
