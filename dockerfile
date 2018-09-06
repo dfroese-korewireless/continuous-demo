@@ -10,6 +10,6 @@ ADD app.tar.gz /
 # RUN go get -d -v ./...
 # RUN go build -o /demo .
 
-RUN ls -l /
+RUN ls -l /html
 
 ENTRYPOINT ["/demo"]
