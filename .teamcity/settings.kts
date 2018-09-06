@@ -54,17 +54,17 @@ object Default : BuildType({
 
         script {
             name = "Copy source code into container"
-            scriptContent = "docker cp . go-build-container:/src"
+            scriptContent = "docker cp . go-build-container:/go/src/github.com/dfroese-korewireless/continuous-demo"
         }
 
         script {
             name = "Setup scripts"
-            scriptContent = "docker exec go-build-container chmod +x /src/scripts/build.sh"
+            scriptContent = "docker exec go-build-container chmod +x /go/src/github.com/dfroese-korewireless/continuous-demo/scripts/build.sh"
         }
 
         script {
             name = "Run build script"
-            scriptContent = "docker exec go-build-container /src/scripts/build.sh"
+            scriptContent = "docker exec go-build-container /go/src/github.com/dfroese-korewireless/continuous-demo/scripts/build.sh"
         }
 
         script {
