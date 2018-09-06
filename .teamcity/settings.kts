@@ -49,12 +49,7 @@ object Default : BuildType({
 
         script {
             name = "Start build container"
-            scriptContent = "docker run --rm -d --name dotnet-build-contanier  microsoft/dotnet:2.1-sdk /bin/bash"
-        }
-
-        script {
-            name = "Setup build container"
-            scriptContent = "docker exec dotnet-build-container mkdir /src"
+            scriptContent = "docker run --rm -d --name dotnet-build-container  microsoft/dotnet:2.1-sdk /bin/bash"
         }
 
         script {
