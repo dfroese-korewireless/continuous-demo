@@ -53,6 +53,11 @@ object Default : BuildType({
         }
 
         script {
+            name = "Setup build container"
+            scriptContent = "docker exec dotnet-build-container mkdir /src"
+        }
+
+        script {
             name = "Copy source code into container"
             scriptContent = "docker cp . dotnet-build-container:/src"
         }
