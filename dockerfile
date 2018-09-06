@@ -10,6 +10,4 @@ ADD app.tar.gz /home
 # RUN go get -d -v ./...
 # RUN go build -o /demo .
 
-RUN ls /home
-
-ENTRYPOINT ["/app/demo"]
+ENTRYPOINT ["/home/demo"]
