@@ -10,4 +10,4 @@ docker run -d --hostname demo.k1d-dockerh-01.ksg.int -l traefik.domain=demo.k1d-
 docker stop demo_2
 docker rm demo_2
 
-docker run -d -l traefik.backend=demo -l traefik.enable=true --network internal --network traefik_proxy --name demo_2 continuous-demo
+docker run -d -l traefik.backend=demo -l traefik.enable=true -l traefik.port=80 --network internal --network traefik_proxy --name demo_2 continuous-demo
