@@ -82,6 +82,7 @@ object Default : BuildType({
                 source = path {
                     path = "dockerfile"
                 }
+                commandArds = "--rm"
                 namesAndTags = "continuous-demo"
             }
         }
