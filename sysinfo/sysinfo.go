@@ -1,29 +1,36 @@
 package sysinfo
 
 import (
-	"errors"
 	"net"
+	"os"
 )
 
 // SysInfo - Stores all the information that needs to be returned
 type SysInfo struct {
-	IPAddress string
+	IPAddress, ContainerName string
 }
 
 // GetSystemInfo - Returns information about the system
-func GetSystemInfo() (*SysInfo, error) {
+func GetSystemInfo() *SysInfo {
 	info := &SysInfo{}
+	info.IPAddress = getIPAddress()
+	info.ContainerName = os.Getenv("CONTAINER_NAME")
+
+	return info
+}
+
+func getIPAddress() string {
 	ifaces, err := net.Interfaces()
 
 	if err != nil {
-		return nil, err
+		return "unknown"
 	}
 
 	for _, i := range ifaces {
 		addrs, err := i.Addrs()
 
 		if err != nil {
-			return nil, err
+			return "unknown"
 		}
 
 		for _, addr := range addrs {
@@ -43,10 +50,9 @@ func GetSystemInfo() (*SysInfo, error) {
 			if ip == nil {
 				continue
 			}
-			info.IPAddress = ip.String()
-			return info, nil
+			return ip.String()
 		}
 	}
 
-	return nil, errors.New("couldn't get the ip address")
+	return "unknown"
 }

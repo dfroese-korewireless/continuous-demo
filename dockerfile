@@ -1,5 +1,7 @@
 FROM alpine:3.8
 
+ENV CONTAINER_NAME "container_name"
+
 ADD app.tar.gz /
 
 # WORKDIR /go/src/github.com/dfroese-korewireless/continuous-demo

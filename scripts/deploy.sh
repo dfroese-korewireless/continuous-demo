@@ -14,6 +14,7 @@ docker run -d \
 	-l traefik.docker.network=traefik_proxy \
 	-l traefik.frontend.entryPoints=http,https \
 	-l traefik.port=80 \
+	-e CONTAINER_NAME="demo_1" \
 	--network internal \
 	--network traefik_proxy \
 	--name demo_1 \
@@ -34,6 +35,7 @@ docker run -d \
 	-l traefik.docker.network=traefik_proxy \
 	-l traefik.frontend.entryPoints=http,https \
 	-l traefik.port=80 \
+	-e CONTAINER_NAME="demo_2" \
 	--network internal \
 	--network traefik_proxy \
 	--name demo_2 \

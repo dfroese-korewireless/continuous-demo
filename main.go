@@ -11,18 +11,11 @@ import (
 
 // Info contains all the information to be put into the web page
 type Info struct {
-	AppVersion, IPAddr string
+	AppVersion, IPAddr, ContainerName string
 }
 
 func serveIndex(w http.ResponseWriter, r *http.Request) {
-	sinfo, err := sysinfo.GetSystemInfo()
-
-	if err != nil {
-		log.Println(err.Error())
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-
+	sinfo := sysinfo.GetSystemInfo()
 	ainfo, err := appinfo.GetAppInfo()
 
 	if err != nil {
@@ -31,7 +24,7 @@ func serveIndex(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	info := Info{AppVersion: ainfo.AppVersion, IPAddr: sinfo.IPAddress}
+	info := Info{AppVersion: ainfo.AppVersion, IPAddr: sinfo.IPAddress, ContainerName: sinfo.ContainerName}
 
 	t := template.New("index.html")
 	t, err = t.ParseFiles("html/index.html")
