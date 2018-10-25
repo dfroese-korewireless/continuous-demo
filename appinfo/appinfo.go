@@ -7,7 +7,8 @@ import (
 
 // AppInfo contains the information to be conveyed
 type AppInfo struct {
-	AppVersion string
+	AppVersion, Port string
+	DBPath           string `json:"DatabasePath"`
 }
 
 const (
