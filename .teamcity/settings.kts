@@ -86,7 +86,7 @@ object Default : BuildType({
         script {
             name = "Stop build container"
             scriptContent = "docker stop go-build-container"
-            executionMode = ALWAYS
+            executionMode = ExecutionMode.ALWAYS
         }
         dockerCommand {
             name = "Build docker image"
