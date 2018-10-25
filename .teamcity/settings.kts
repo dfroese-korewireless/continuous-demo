@@ -3,6 +3,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.dockerCommand
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.exec
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.vcs
+import jetbrains.buildServer.configs.kotlin.v2018_1.BuildStep.ExecutionMode
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -75,12 +76,17 @@ object Default : BuildType({
             scriptContent = "docker exec go-build-container /go/src/github.com/dfroese-korewireless/continuous-demo/scripts/build.sh"
         }
         script {
+            name = "Run test script"
+            scriptContent = "docker exec go-build-container /go/src/github.com/dfroese-korewireless/continuous-demo/scripts/test.sh"
+        }
+        script {
             name = "Copy artifact archive out of container"
             scriptContent = "docker cp go-build-container:/artifacts/app.tar.gz ."
         }
         script {
             name = "Stop build container"
             scriptContent = "docker stop go-build-container"
+            executionMode = ALWAYS
         }
         dockerCommand {
             name = "Build docker image"
