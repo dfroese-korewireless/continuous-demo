@@ -69,7 +69,7 @@ object Default : BuildType({
         }
         script {
             name = "Setup scripts"
-            scriptContent = "docker exec go-build-container chmod +x /go/src/github.com/dfroese-korewireless/continuous-demo/scripts/build.sh"
+            scriptContent = "docker exec go-build-container chmod +x /go/src/github.com/dfroese-korewireless/continuous-demo/scripts/*.sh"
         }
         script {
             name = "Run build script"
