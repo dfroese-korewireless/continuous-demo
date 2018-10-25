@@ -121,7 +121,7 @@ func (b *boltDB) GetMessage(id uint64) (messages.Message, error) {
 	}
 	defer db.Close()
 
-	var msg messages.Message
+	msg := messages.Message{}
 	err = db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(messagesBucket))
 		v := bucket.Get(itob(id))

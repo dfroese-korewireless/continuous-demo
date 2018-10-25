@@ -47,6 +47,7 @@ func (ctx *context) CreateMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(struct{ ID uint64 }{ID: id})
 }
 
@@ -59,6 +60,7 @@ func (ctx *context) GetMessages(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(msgs)
 }
 
@@ -74,10 +76,17 @@ func (ctx *context) GetMessage(w http.ResponseWriter, r *http.Request) {
 	}
 	msg, err := ctx.Database.GetMessage(msgID)
 	if err != nil {
+		if err.Error() == fmt.Sprintf("looking up value for %d return nil", msgID) {
+			fmt.Printf("unable to find message with id %d\n", msgID)
+			http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+			return
+		}
+
 		fmt.Printf("retrieving message from database: %s\n", err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
+	w.Header().Add("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(msg)
 }
