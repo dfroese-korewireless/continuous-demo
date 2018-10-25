@@ -5,6 +5,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.exec
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.dockerCommand
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.DockerBuildStep.Source
+import jetbrains.buildServer.configs.kotlin.v2018_1.BuildStep.ExecutionMode
 
 version = "2018.1"
 
@@ -67,6 +68,11 @@ object Default : BuildType({
         }
 
         script {
+            name = "Run unit test script"
+            scriptContent = "docker exec go-build-container /go/src/github.com/dfroese-korewireless/continuous-demo/scripts/test.sh"
+        }
+
+        script {
             name = "Copy artiface archive out of container"
             scriptContent = "docker cp go-build-container:/artifacts/app.tar.gz ."
         }
@@ -74,6 +80,7 @@ object Default : BuildType({
         script {
             name = "Stop build container"
             scriptContent = "docker stop go-build-container"
+            executionMode = ALWAYS
         }
 
         dockerCommand {
