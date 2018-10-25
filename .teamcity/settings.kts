@@ -73,7 +73,7 @@ object Default : BuildType({
         }
 
         script {
-            name = "Copy artiface archive out of container"
+            name = "Copy artifact archive out of container"
             scriptContent = "docker cp go-build-container:/artifacts/app.tar.gz ."
         }
 
