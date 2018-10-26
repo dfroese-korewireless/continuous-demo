@@ -6,70 +6,107 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/dfroese-korewireless/continuous-demo/api"
 	"github.com/dfroese-korewireless/continuous-demo/messages"
-	"github.com/dfroese-korewireless/continuous-demo/storage"
 	"github.com/gorilla/mux"
 )
 
-const (
-	dbLocation = "unit_test.database"
-)
+var nextID uint64 = 1
+
+type mockDatabase struct {
+	data map[uint64]messages.Message
+}
+
+// GetAllMessages mocked implementation
+func (db *mockDatabase) GetAllMessages() ([]messages.Message, error) {
+	var msgs []messages.Message
+	for _, v := range db.data {
+		msgs = append(msgs, v)
+	}
+
+	return msgs, nil
+}
+
+// GetMessage mocked implementation
+func (db *mockDatabase) GetMessage(id uint64) (messages.Message, error) {
+	msg := db.data[id]
+	if (msg == messages.Message{}) {
+		return msg, fmt.Errorf("looking up value for %d return nil", id)
+	}
+
+	return msg, nil
+}
+
+// StoreMessage mocked implementation
+func (db *mockDatabase) StoreMessage(msg messages.Message) (uint64, error) {
+	msg.ID = nextID
+	db.data[nextID] = msg
+
+	nextID += 1
+	return msg.ID, nil
+}
 
 var apiCtx api.Accessor
 
 func setup() {
-	fmt.Println("Running setup...")
+	testData := []struct {
+		RequestBody   string
+		RequestMethod string
+		RequestURL    string
+	}{{
+		RequestBody:   `{"Text":"Hello, World", "Username":"Banksy"}`,
+		RequestMethod: "POST",
+		RequestURL:    "/api/v1/messages",
+	}, {
+		RequestBody:   `{"Text":"Banksy was here", "Username":"not banksy"}`,
+		RequestMethod: "POST",
+		RequestURL:    "/api/v1/messages",
+	}}
 
-	db, err := storage.New(dbLocation)
-	if err != nil {
-		panic(err)
-	}
+	nextID = 1
+	db := &mockDatabase{data: make(map[uint64]messages.Message)}
+
 	apiCtx = api.New(db)
-}
 
-func teardown() {
-	fmt.Println("Running teardown...")
-	err := os.Remove(dbLocation)
-	if err != nil {
-		panic(err)
+	for _, d := range testData {
+		req, err := http.NewRequest(d.RequestMethod, d.RequestURL, bytes.NewBuffer([]byte(d.RequestBody)))
+		if err != nil {
+			panic(err)
+		}
+		req.Header.Set("Content-Type", "application/json")
+		rr := httptest.NewRecorder()
+		handler := http.HandlerFunc(apiCtx.CreateMessage)
+
+		handler.ServeHTTP(rr, req)
 	}
 }
-
-func TestMain(m *testing.M) {
-	setup()
-
-	retCode := m.Run()
-
-	teardown()
-	os.Exit(retCode)
-}
-
-var createTests = []struct {
-	ExpectedStatusCode  int
-	ExpectedContentType string
-	RequestBody         string
-	RequestMethod       string
-	RequestURL          string
-}{{
-	ExpectedStatusCode:  http.StatusCreated,
-	ExpectedContentType: "application/json",
-	RequestBody:         `{"Text":"Hello, World", "Username":"Banksy"}`,
-	RequestMethod:       "POST",
-	RequestURL:          "/api/v1/messages",
-}, {
-	ExpectedStatusCode:  http.StatusCreated,
-	ExpectedContentType: "application/json",
-	RequestBody:         `{"Text":"Banksy was here", "Username":"not banksy"}`,
-	RequestMethod:       "POST",
-	RequestURL:          "/api/v1/messages",
-}}
 
 func TestCreateMessage(t *testing.T) {
-	for _, tc := range createTests {
+	testCases := []struct {
+		ExpectedStatusCode  int
+		ExpectedContentType string
+		RequestBody         string
+		RequestMethod       string
+		RequestURL          string
+	}{{
+		ExpectedStatusCode:  http.StatusCreated,
+		ExpectedContentType: "application/json",
+		RequestBody:         `{"Text":"Hello, World", "Username":"Banksy"}`,
+		RequestMethod:       "POST",
+		RequestURL:          "/api/v1/messages",
+	}, {
+		ExpectedStatusCode:  http.StatusCreated,
+		ExpectedContentType: "application/json",
+		RequestBody:         `{"Text":"Banksy was here", "Username":"not banksy"}`,
+		RequestMethod:       "POST",
+		RequestURL:          "/api/v1/messages",
+	}}
+
+	setup()
+
+	for _, tc := range testCases {
 		req, err := http.NewRequest(tc.RequestMethod, tc.RequestURL, bytes.NewBuffer([]byte(tc.RequestBody)))
 		if err != nil {
 			t.Fatalf("unable to create request for method %v url %v with body %v", tc.RequestMethod, tc.RequestURL, tc.RequestBody)
@@ -91,36 +128,38 @@ func TestCreateMessage(t *testing.T) {
 	}
 }
 
-var getAllTest = struct {
-	ExpectedStatusCode  int
-	ExpectedContentType string
-	ExpectedCount       int
-	RequestMethod       string
-	RequestURL          string
-}{
-	ExpectedStatusCode:  http.StatusOK,
-	ExpectedContentType: "application/json",
-	ExpectedCount:       2,
-	RequestMethod:       "GET",
-	RequestURL:          "/api/v1/messages",
-}
-
 func TestGetMessages(t *testing.T) {
-	req, err := http.NewRequest(getAllTest.RequestMethod, getAllTest.RequestURL, nil)
+	testCase := struct {
+		ExpectedStatusCode  int
+		ExpectedContentType string
+		ExpectedCount       int
+		RequestMethod       string
+		RequestURL          string
+	}{
+		ExpectedStatusCode:  http.StatusOK,
+		ExpectedContentType: "application/json",
+		ExpectedCount:       2,
+		RequestMethod:       "GET",
+		RequestURL:          "/api/v1/messages",
+	}
+
+	setup()
+
+	req, err := http.NewRequest(testCase.RequestMethod, testCase.RequestURL, nil)
 	if err != nil {
-		t.Fatalf("unable to create request for method %v url %v", getAllTest.RequestMethod, getAllTest.RequestURL)
+		t.Fatalf("unable to create request for method %v url %v", testCase.RequestMethod, testCase.RequestURL)
 	}
 
 	rr := httptest.NewRecorder()
 	handler := http.HandlerFunc(apiCtx.GetMessages)
 	handler.ServeHTTP(rr, req)
 
-	if status := rr.Code; status != getAllTest.ExpectedStatusCode {
-		t.Errorf("handler return wrong status code: got %v want %v", status, getAllTest.ExpectedStatusCode)
+	if status := rr.Code; status != testCase.ExpectedStatusCode {
+		t.Errorf("handler return wrong status code: got %v want %v", status, testCase.ExpectedStatusCode)
 	}
 
-	if content := rr.Header().Get("Content-Type"); content != getAllTest.ExpectedContentType {
-		t.Errorf("handler returned wrong content-type: got %v want %v", content, getAllTest.ExpectedContentType)
+	if content := rr.Header().Get("Content-Type"); content != testCase.ExpectedContentType {
+		t.Errorf("handler returned wrong content-type: got %v want %v", content, testCase.ExpectedContentType)
 	}
 
 	var msgs []messages.Message
@@ -129,47 +168,48 @@ func TestGetMessages(t *testing.T) {
 		t.Fatalf("unable to parse the response into messages array")
 	}
 
-	if len(msgs) != getAllTest.ExpectedCount {
-		t.Errorf("handler returned the wrong count of messages: got %v want %v", len(msgs), getAllTest.ExpectedCount)
+	if len(msgs) != testCase.ExpectedCount {
+		t.Errorf("handler returned the wrong count of messages: got %v want %v", len(msgs), testCase.ExpectedCount)
 	}
 }
 
-var getMessageTests = []struct {
-	ExpectedStatusCode  int
-	ExpectedContentType string
-	ExpectedUsername    string
-	ExpectedID          uint64
-	ExpectedText        string
-	RequestMethod       string
-	RequestURL          string
-}{{
-	ExpectedStatusCode:  200,
-	ExpectedContentType: "application/json",
-	ExpectedUsername:    "Banksy",
-	ExpectedID:          1,
-	ExpectedText:        "Hello, World",
-	RequestMethod:       "GET",
-	RequestURL:          "/api/v1/messages/1",
-}, {
-	ExpectedStatusCode:  200,
-	ExpectedContentType: "application/json",
-	ExpectedUsername:    "not banksy",
-	ExpectedID:          2,
-	ExpectedText:        "Banksy was here",
-	RequestMethod:       "GET",
-	RequestURL:          "/api/v1/messages/2",
-}, {
-	ExpectedStatusCode:  404,
-	ExpectedContentType: "text/plain; charset=utf-8",
-	RequestMethod:       "GET",
-	RequestURL:          "/api/v1/messages/3",
-}}
-
 func TestGetMessage(t *testing.T) {
+	testCases := []struct {
+		ExpectedStatusCode  int
+		ExpectedContentType string
+		ExpectedUsername    string
+		ExpectedID          uint64
+		ExpectedText        string
+		RequestMethod       string
+		RequestURL          string
+	}{{
+		ExpectedStatusCode:  200,
+		ExpectedContentType: "application/json",
+		ExpectedUsername:    "Banksy",
+		ExpectedID:          1,
+		ExpectedText:        "Hello, World",
+		RequestMethod:       "GET",
+		RequestURL:          "/api/v1/messages/1",
+	}, {
+		ExpectedStatusCode:  200,
+		ExpectedContentType: "application/json",
+		ExpectedUsername:    "not banksy",
+		ExpectedID:          2,
+		ExpectedText:        "Banksy was here",
+		RequestMethod:       "GET",
+		RequestURL:          "/api/v1/messages/2",
+	}, {
+		ExpectedStatusCode:  404,
+		ExpectedContentType: "text/plain; charset=utf-8",
+		RequestMethod:       "GET",
+		RequestURL:          "/api/v1/messages/3",
+	}}
+
+	setup()
 	router := mux.NewRouter()
 	router.HandleFunc("/api/v1/messages/{id}", apiCtx.GetMessage)
 
-	for _, tc := range getMessageTests {
+	for _, tc := range testCases {
 		req, err := http.NewRequest(tc.RequestMethod, tc.RequestURL, nil)
 		if err != nil {
 			t.Fatalf("unable to create request for method %v url %v", tc.RequestMethod, tc.RequestURL)

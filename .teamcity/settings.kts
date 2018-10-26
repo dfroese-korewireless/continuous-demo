@@ -33,14 +33,11 @@ project {
     description = "A sample project for experimenting with TeamCity Kotlin DSL"
 
     buildType(Default)
-
-    params {
-        param("env.BuildNumber", "1.0.%build.counter%")
-    }
 }
 
 object Default : BuildType({
     name = "Default"
+    buildNumberPattern = "1.0.%build.counter%"
 
     vcs {
         root(DslContext.settingsRoot)
@@ -53,7 +50,7 @@ object Default : BuildType({
         }
         script {
             name = "Build config file"
-            scriptContent = "sed -e 's/##version##/%env.BuildNumber%/g' appsettings.dev.json > appsettings.json"
+            scriptContent = "sed -e 's/##version##/%env.build_number%/g' appsettings.dev.json > appsettings.json"
         }
         script {
             name = "Start build container"
