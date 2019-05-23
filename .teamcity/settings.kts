@@ -72,7 +72,7 @@ object Default : BuildType({
 						-:*
 						+:<default>
 					""".trimIndent()
-					groupCheckinByCommitter = true
+					groupCheckinsByCommitter = true
         }
     }
 })
