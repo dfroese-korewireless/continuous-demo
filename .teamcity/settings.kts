@@ -67,6 +67,11 @@ object Default : BuildType({
 
     triggers {
         vcs {
+					branchFilter = """
+						-:*
+						+:<default>
+					""".trimIndent()
+					groupCheckinByCommitter = true
         }
     }
 })
