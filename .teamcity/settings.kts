@@ -1,4 +1,8 @@
 import jetbrains.buildServer.configs.kotlin.v2018_2.*
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.exec
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.execBuildStep
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.dockerCommandStep
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.dockerBuildStep
 
 version = "2018.2"
 
@@ -28,7 +32,7 @@ object Default : BuildType({
 					name = "Run Test Script"
 					path = "./scripts/test.sh"
 					dockerImage = "golang:1.12.4"
-					dockerImagePlatform = ExecBuidlStep.ImagePlatform.Linux
+					dockerImagePlatform = ExecBuildStep.ImagePlatform.Linux
 					dockerRunParameters = "--rm"
 				}
         dockerCommand {
