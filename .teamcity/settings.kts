@@ -1,8 +1,7 @@
 import jetbrains.buildServer.configs.kotlin.v2018_2.*
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.ExecBuildStep
+import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.dockerCommand
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.exec
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.execBuildStep
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.dockerCommandStep
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.dockerBuildStep
 
 version = "2018.2"
 
@@ -44,7 +43,7 @@ object Default : BuildType({
                 namesAndTags = "continuous-demo"
             }
         }
-				docker {
+				dockerCommand {
 					name = "Create image tar"
 					commandType = other {
 						subCommand = "save"
