@@ -1,11 +1,6 @@
-import jetbrains.buildServer.configs.kotlin.v2018_1.*
-import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.dockerCommand
-import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.exec
-import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.vcs
-import jetbrains.buildServer.configs.kotlin.v2018_1.BuildStep.ExecutionMode
+import jetbrains.buildServer.configs.kotlin.v2018_2.*
 
-version = "2018.1"
+version = "2018.2"
 
 project {
     description = "A sample project for experimenting with TeamCity Kotlin DSL"
